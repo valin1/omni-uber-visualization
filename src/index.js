@@ -22,9 +22,9 @@ connector.protocol('https')
   .connectAsync()
   .then(session=>
     {
-      Promise.all([session.queryAsync('SELECT * FROM uber_movement_data21', defaultQueryOptions), session.queryAsync('SELECT * FROM san_francisco_taz_good', defaultQueryOptions)])
+      Promise.all([session.queryAsync('SELECT * FROM uber_movement_data21', defaultQueryOptions)])
       .then(values => {
-              createDeckGL(values);
+              createDeckGL(values[0]);
     })  })
 .catch(error => {
     console.error("Something bad happened: ", error)
@@ -34,6 +34,7 @@ connector.protocol('https')
 //Create deck.gl object
 
 function createDeckGL(values){
+  console.log(values);
   deckgl = new deck.DeckGL({
   container: 'container',
   mapboxApiAccessToken: 'pk.eyJ1IjoiZGlwdGlrb3RoYXJpIiwiYSI6ImNqaWt3YWZuazJpazUzcXF5M3p0aml3dWcifQ.cyNkWKiPEN2L3oUHgLOTeA',
@@ -54,7 +55,7 @@ function addPolygon(data){
     filled: true,
     wireframe: true,
     lineWidthMinPixels: 1,
-    getPolygon: d => d.Contour,
+    getPolygon: d => d.contour,
     getFillColor: d => [0,255,255,255],
     getLineWidth: 1,
     fp64:true
