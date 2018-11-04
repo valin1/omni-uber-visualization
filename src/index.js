@@ -3,17 +3,17 @@ import MapDCon from '@mapd/connector/dist/browser-connector';
 const defaultQueryOptions = {};
 var deckgl;
 var currentFilter={seaLevel:0,NOR:5,commercial:"COMM-MO','COMM",government:'GOVT',duplex:'DUP',quad:'QUAD',residential:'CA - Res',condo:'CA - Condo',SFR:'SFR',GP:1,HP:0,HP_check:0,freeze:0,pointSize:5,DTM:1,DSM:1}
-var tooltip
-var debounceZoom = debounce(function(v,boundingPoly){
-  zoomCheck(v.zoom)
-  executeQuery(boundingPoly);
-}, 500);
+// var tooltip
+// var debounceZoom = debounce(function(v,boundingPoly){
+//   zoomCheck(v.zoom)
+//   executeQuery(boundingPoly);
+// }, 500);
 
 //Establish connection with MapD using Mapd-connector
 
 //Please enter Mapd server details
 const connector = new MapdCon();
-connector.protocol(protocol)
+connector.protocol('https')
   .host('use2-api.mapd.cloud')
   .port(443)
   .dbName('mapd')
@@ -22,7 +22,7 @@ connector.protocol(protocol)
   .connectAsync()
   .then(session=>
     {
-      Promise.all([session.queryAsync('SELECT * FROM uber_movement_data', defaultQueryOptions), session.queryAsync('SELECT * FROM san_francisco_data', defaultQueryOptions)])
+      Promise.all([session.queryAsync('SELECT * FROM uber_movement_data21', defaultQueryOptions), session.queryAsync('SELECT * FROM san_francisco_taz_good', defaultQueryOptions)])
       .then(values => {
               createDeckGL(values);
     })  })
@@ -39,7 +39,7 @@ function createDeckGL(values){
   mapboxApiAccessToken: 'pk.eyJ1IjoiZGlwdGlrb3RoYXJpIiwiYSI6ImNqaWt3YWZuazJpazUzcXF5M3p0aml3dWcifQ.cyNkWKiPEN2L3oUHgLOTeA',
   longitude: -81.41028,
   latitude: 31.10102,
-  layers:[ addPolygon(values)],
+  layers:[addPolygon(values)],
   zoom:12
     });
 
