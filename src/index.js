@@ -22,7 +22,7 @@ connector.protocol(protocol)
   .connectAsync()
   .then(session=>
     {
-      Promise.all([session.queryAsync(‘SELECT * FROM uber_movement_data’, defaultQueryOptions), session.queryAsync(‘SELECT * FROM san_francisco_data’, defaultQueryOptions)])
+      Promise.all([session.queryAsync('SELECT * FROM uber_movement_data', defaultQueryOptions), session.queryAsync('SELECT * FROM san_francisco_data', defaultQueryOptions)])
       .then(values => {
               createDeckGL(values);
     })  })
@@ -317,28 +317,28 @@ function tooltipEvent(info){
 //   });
 // }
 
-function queryBuild(poly){
-    var filterPoints=' AND NumberOfReturns<='+currentFilter.NOR
-  //GP : Ground Points
-  if(currentFilter.GP==0){
-    filterPoints+=' AND Classification=1'
-  }
-  //Vegetation Points
-  if(currentFilter.DTM==0){
-    filterPoints+=' AND NumberOfReturns<=1'
-  }
-  //Elevated Non vegetation points
-  if(currentFilter.DSM==0){
-    filterPoints+=' AND NumberOfReturns>2'
-  }
-  if(currentFilter.HP_check==1 && currentFilter.HP==1){
-    var pointQuery="SELECT sourceid, tt_mean, date_hour, tt_g_sd FROM uber_travel_times WHERE ST_Contains(ST_GeomFromText('POLYGON(("+poly[0][0]+" "+poly[0][1]+","+poly[1][0]+" "+poly[1][1]+","+poly[2][0]+" "+poly[2][1]+","+poly[3][0]+" "+poly[3][1]+"))'),mapd_geo) "+filterPoints+" LIMIT 500000";
-  }
-  else{
-    var rows_passing_filters="(SELECT COUNT(sourceid) FROM uber_travel_times WHERE ST_Contains(ST_GeomFromText('POLYGON(("+poly[0][0]+" "+poly[0][1]+","+poly[1][0]+" "+poly[1][1]+","+poly[2][0]+" "+poly[2][1]+","+poly[3][0]+" "+poly[3][1]+"))'),mapd_geo) "+filterPoints+")";
-    var pointQuery="SELECT sourceid, tt_mean, date_hour FROM uber_travel_times WHERE ST_Contains(ST_GeomFromText('POLYGON(("+poly[0][0]+" "+poly[0][1]+","+poly[1][0]+" "+poly[1][1]+","+poly[2][0]+" "+poly[2][1]+","+poly[3][0]+" "+poly[3][1]+"))'),mapd_geo) "+filterPoints+" LIMIT 50000";
-  }
-}
+// function queryBuild(poly){
+//     var filterPoints=' AND NumberOfReturns<='+currentFilter.NOR
+//   //GP : Ground Points
+//   if(currentFilter.GP==0){
+//     filterPoints+=' AND Classification=1'
+//   }
+//   //Vegetation Points
+//   if(currentFilter.DTM==0){
+//     filterPoints+=' AND NumberOfReturns<=1'
+//   }
+//   //Elevated Non vegetation points
+//   if(currentFilter.DSM==0){
+//     filterPoints+=' AND NumberOfReturns>2'
+//   }
+//   if(currentFilter.HP_check==1 && currentFilter.HP==1){
+//     var pointQuery="SELECT sourceid, tt_mean, date_hour, tt_g_sd FROM uber_travel_times WHERE ST_Contains(ST_GeomFromText('POLYGON(("+poly[0][0]+" "+poly[0][1]+","+poly[1][0]+" "+poly[1][1]+","+poly[2][0]+" "+poly[2][1]+","+poly[3][0]+" "+poly[3][1]+"))'),mapd_geo) "+filterPoints+" LIMIT 500000";
+//   }
+//   else{
+//     var rows_passing_filters="(SELECT COUNT(sourceid) FROM uber_travel_times WHERE ST_Contains(ST_GeomFromText('POLYGON(("+poly[0][0]+" "+poly[0][1]+","+poly[1][0]+" "+poly[1][1]+","+poly[2][0]+" "+poly[2][1]+","+poly[3][0]+" "+poly[3][1]+"))'),mapd_geo) "+filterPoints+")";
+//     var pointQuery="SELECT sourceid, tt_mean, date_hour FROM uber_travel_times WHERE ST_Contains(ST_GeomFromText('POLYGON(("+poly[0][0]+" "+poly[0][1]+","+poly[1][0]+" "+poly[1][1]+","+poly[2][0]+" "+poly[2][1]+","+poly[3][0]+" "+poly[3][1]+"))'),mapd_geo) "+filterPoints+" LIMIT 50000";
+//   }
+// }
 //Build query using bounding box(poly) and filter(currentFilter) values
 // function queryBuild(poly){
 //     var filterPoints=' AND NumberOfReturns<='+currentFilter.NOR
@@ -367,29 +367,29 @@ function queryBuild(poly){
 // }
 
 //Enable/Disable High Precision based on zoom level
-function zoomCheck(zoom){
-  if(zoom==20){
-    $("#highPrecision").bootstrapToggle('enable');
-    currentFilter.HP_check=1
-  }
-  else{
-    $('#highPrecision').bootstrapToggle('off');
-    $("#highPrecision").bootstrapToggle('disable');
-    currentFilter.HP_check=0
-    currentFilter.HP=0
-  }
-}
+// function zoomCheck(zoom){
+//   if(zoom==20){
+//     $("#highPrecision").bootstrapToggle('enable');
+//     currentFilter.HP_check=1
+//   }
+//   else{
+//     $('#highPrecision').bootstrapToggle('off');
+//     $("#highPrecision").bootstrapToggle('disable');
+//     currentFilter.HP_check=0
+//     currentFilter.HP=0
+//   }
+// }
 
 //Request query from MapD
-function executeQuery(boundingPoly){
-  var queries=queryBuild([boundingPoly[0],boundingPoly[1],boundingPoly[2],boundingPoly[3]])
-  Promise.all([
-    connector.queryAsync(queries[0],defaultQueryOptions),
-    connector.queryAsync(queries[1],defaultQueryOptions)
-  ]).then(values=>{
-    console.log(values)
-    var polygonData=dataTransformPoly(values[0])
-    deckgl.setProps({layers: [addPointCloud(dataTransformPoint(values[1])),addPolygonBuildingHeight(polygonData[1]),addPolygonFloodIndicator(polygonData[0])]});
-  })
-}
+// function executeQuery(boundingPoly){
+//   var queries=queryBuild([boundingPoly[0],boundingPoly[1],boundingPoly[2],boundingPoly[3]])
+//   Promise.all([
+//     connector.queryAsync(queries[0],defaultQueryOptions),
+//     connector.queryAsync(queries[1],defaultQueryOptions)
+//   ]).then(values=>{
+//     console.log(values)
+//     var polygonData=dataTransformPoly(values[0])
+//     deckgl.setProps({layers: [addPointCloud(dataTransformPoint(values[1])),addPolygonBuildingHeight(polygonData[1]),addPolygonFloodIndicator(polygonData[0])]});
+//   })
+// }
 
