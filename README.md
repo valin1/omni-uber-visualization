@@ -2,9 +2,9 @@
 A web application that is built upon deck.gl and displays Uber data
 
 Run 
-	brew install yarn
+` brew install yarn `
 Load dependencies
-	yarn install
+` yarn install `
 Start application
-	yarn run 
+` yarn run `
 
